@@ -19,7 +19,6 @@ for i in id_team:
     team = data_team.json()
 
     nm_tm[team['name']] = i
-    print(team['name'])
 
 
 id_players = []
@@ -41,11 +40,9 @@ for i in range(len(id_players)):
 
     qs = server + '/players/' + str(id_players[i])
     data_player = requests.get(qs, headers={'Authorization': 'b6d105957c0b5f955bf679f5ba8613fb82a4b883f8418f36a6c8331df4254a40'})
-    print(i, data_player.status_code)
     if data_player.status_code == 429:
         time.sleep(1)
         data_player = requests.get(qs, headers={'Authorization': 'b6d105957c0b5f955bf679f5ba8613fb82a4b883f8418f36a6c8331df4254a40'})
-        print(i, data_player.status_code)
 
     player = data_player.json()
 
@@ -57,8 +54,6 @@ print(*players, sep = '\n')
 qs = server + "/matches"
 data_matches = requests.get(qs, headers={'Authorization': 'b6d105957c0b5f955bf679f5ba8613fb82a4b883f8418f36a6c8331df4254a40'})
 mm = json.loads(data_matches.text)
-
-print(*mm, sep = "\n")
 
 def kom(id):
     wn = 0
@@ -102,15 +97,17 @@ while(1):
 
     if s[0] == 's':
         a = s.split()
-        print(a)
         name = ""
         for i in range(1, len(a)):
             if (i != 1):
                 name += ' '
 
             name += a[i]
-        print(name)
-        print(*kom(nm_tm[name[1:-1]]))
+        
+        if (nm_tm.get(name) == None):
+            print("0 0 0")
+        else:
+            print(*kom(nm_tm[name[1:-1]]))
     else:
         a, id1, id2 = s.split()
         id1 = int(id1)
