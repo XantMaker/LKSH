@@ -23,7 +23,7 @@ for i in tm:
 
 nm_tm = dict()
 for i in id_team:
-    qs = server + '/teams/' + str(id)
+    qs = server + '/teams/' + str(i)
     data_team = requests.get(qs, headers={'Authorization': auth_str})
     if data_team.status_code == 429:
         time.sleep(1)
