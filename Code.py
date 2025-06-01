@@ -1,6 +1,7 @@
 import requests
 import json
 import time
+import threading
 
 server = "https://lksh-enter.ru"
 
@@ -51,9 +52,25 @@ players.sort()
 
 print(*players, sep = '\n')
 
-qs = server + "/matches"
-data_matches = requests.get(qs, headers={'Authorization': 'b6d105957c0b5f955bf679f5ba8613fb82a4b883f8418f36a6c8331df4254a40'})
-mm = json.loads(data_matches.text)
+flag = threading.Event()
+flag.set()
+
+global mm
+
+def kash():
+    flag.wait()
+    flag.clear()
+    qs = server + "/matches"
+    data_matches = requests.get(qs, headers={'Authorization': 'b6d105957c0b5f955bf679f5ba8613fb82a4b883f8418f36a6c8331df4254a40'})
+    global mm
+    mm = json.loads(data_matches.text)
+
+    #print("done")
+    timer = threading.Timer(600, kash)
+    timer.start()
+    flag.set()
+
+kash()
 
 def kom(id):
     wn = 0
@@ -79,7 +96,6 @@ def kom(id):
     return [wn, ls, gl]
 
 def ply(id1, id2):
-    print(id1, id2)
     if pl_tm.get(id1) == None or pl_tm.get(id2) == None:
         return 0
     
@@ -92,9 +108,12 @@ def ply(id1, id2):
             mt += 1
     return mt
 
+
 while(1):
     s = input()
+    #print(mm)
 
+    flag.clear()
     if s[0] == 's':
         a = s.split()
         name = ""
@@ -113,3 +132,5 @@ while(1):
         id1 = int(id1)
         id2 = int(id2)
         print(ply(id1, id2))
+    flag.set()
+
