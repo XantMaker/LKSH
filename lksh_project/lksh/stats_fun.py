@@ -20,7 +20,7 @@ def stats(name):
     name = name[1:-1]
 
     if (nm_tm.get(name) == None):
-        return [-1, -1, -1]
+        return [0, 0, 0]
 
     mm = server.matches()
 
@@ -29,6 +29,7 @@ def stats(name):
     gl = 0
     id = nm_tm[name]
     for i in mm:
+
         if i['team1'] == id:
             if i['team1_score'] > i['team2_score']:
                 wn += 1
@@ -36,6 +37,7 @@ def stats(name):
                 ls += 1
             gl += i['team1_score']
             gl -= i['team2_score']
+
         if i['team2'] == id:
             if i['team1_score'] < i['team2_score']:
                 wn += 1
