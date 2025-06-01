@@ -141,7 +141,8 @@ while(1):
 
             name += a[i]
         
-        name = name[1:-1]
+        if name[0] == "\"" and name[-1] == "\"":
+            name = name[1:-1]
         if (nm_tm.get(name) == None):
             print("0 0 0")
         else:
