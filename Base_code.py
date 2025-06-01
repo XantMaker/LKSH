@@ -16,7 +16,6 @@ if data_teams.status_code == 429:
 tm = []
 if data_teams.status_code == 200:
     tm = json.loads(data_teams.text)
-
 id_team = []
 for i in tm:
     id_team.append(i['id'])
@@ -64,6 +63,7 @@ for i in range(len(id_players)):
 players.sort()
 
 print(*players, sep = '\n')
+
 
 flag = threading.Event()
 flag.set()
@@ -141,10 +141,11 @@ while(1):
 
             name += a[i]
         
+        name = name[1:-1]
         if (nm_tm.get(name) == None):
             print("0 0 0")
         else:
-            print(*kom(nm_tm[name[1:-1]]))
+            print(*kom(nm_tm[name]))
     else:
         a, id1, id2 = s.split()
         id1 = int(id1)
