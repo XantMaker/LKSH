@@ -17,7 +17,8 @@ def stats(name):
 
         nm_tm[team['name']] = i
 
-    name = name[1:-1]
+    if name[0] == "\"" and name[-1] == "\"":
+        name = name[1:-1]
 
     if (nm_tm.get(name) == None):
         return [0, 0, 0]
