@@ -4,9 +4,10 @@ import time
 import threading
 
 server = "https://lksh-enter.ru"
+auth_str = "b6d105957c0b5f955bf679f5ba8613fb82a4b883f8418f36a6c8331df4254a40"
 
 qs = server + "/teams"
-data_teams = requests.get(qs, headers={'Authorization': 'b6d105957c0b5f955bf679f5ba8613fb82a4b883f8418f36a6c8331df4254a40'})
+data_teams = requests.get(qs, headers={'Authorization': auth_str})
 tm = json.loads(data_teams.text)
 
 id_team = []
@@ -16,7 +17,7 @@ for i in tm:
 nm_tm = dict()
 for i in id_team:
     qs = server + '/teams/' + str(i)
-    data_team = requests.get(qs, headers={'Authorization': 'b6d105957c0b5f955bf679f5ba8613fb82a4b883f8418f36a6c8331df4254a40'})
+    data_team = requests.get(qs, headers={'Authorization': auth_str})
     team = data_team.json()
 
     nm_tm[team['name']] = i
@@ -40,10 +41,10 @@ for i in range(len(id_players)):
         continue
 
     qs = server + '/players/' + str(id_players[i])
-    data_player = requests.get(qs, headers={'Authorization': 'b6d105957c0b5f955bf679f5ba8613fb82a4b883f8418f36a6c8331df4254a40'})
+    data_player = requests.get(qs, headers={'Authorization': auth_str})
     if data_player.status_code == 429:
         time.sleep(1)
-        data_player = requests.get(qs, headers={'Authorization': 'b6d105957c0b5f955bf679f5ba8613fb82a4b883f8418f36a6c8331df4254a40'})
+        data_player = requests.get(qs, headers={'Authorization': auth_str})
 
     player = data_player.json()
 
@@ -61,7 +62,7 @@ def kash():
     flag.wait()
     flag.clear()
     qs = server + "/matches"
-    data_matches = requests.get(qs, headers={'Authorization': 'b6d105957c0b5f955bf679f5ba8613fb82a4b883f8418f36a6c8331df4254a40'})
+    data_matches = requests.get(qs, headers={'Authorization': auth_str})
     global mm
     mm = json.loads(data_matches.text)
 
