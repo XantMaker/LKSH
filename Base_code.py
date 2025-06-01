@@ -8,7 +8,14 @@ auth_str = "b6d105957c0b5f955bf679f5ba8613fb82a4b883f8418f36a6c8331df4254a40"
 
 qs = server + "/teams"
 data_teams = requests.get(qs, headers={'Authorization': auth_str})
-tm = json.loads(data_teams.text)
+
+if data_teams.status_code == 429:
+    time.sleep(1)
+    data_teams = requests.get(qs, headers={'Authorization': auth_str})
+
+tm = []
+if data_teams.status_code == 200:
+    tm = json.loads(data_teams.text)
 
 id_team = []
 for i in tm:
@@ -16,11 +23,15 @@ for i in tm:
 
 nm_tm = dict()
 for i in id_team:
-    qs = server + '/teams/' + str(i)
+    qs = server + '/teams/' + str(id)
     data_team = requests.get(qs, headers={'Authorization': auth_str})
-    team = data_team.json()
-
-    nm_tm[team['name']] = i
+    if data_team.status_code == 429:
+        time.sleep(1)
+        data_team = requests.get(qs, headers={'Authorization': auth_str})
+    
+    if data_team.status_code == 200:
+        team = json.loads(data_team.text)
+        nm_tm[team['name']] = i
 
 
 id_players = []
@@ -46,9 +57,10 @@ for i in range(len(id_players)):
         time.sleep(1)
         data_player = requests.get(qs, headers={'Authorization': auth_str})
 
-    player = data_player.json()
+    if data_player.status_code == 200:
+        player = data_player.json()
+        players.append(player['name'] + " " + player['surname'])
 
-    players.append(player['name'] + " " + player['surname'])
 players.sort()
 
 print(*players, sep = '\n')
@@ -62,9 +74,15 @@ def kash():
     flag.wait()
     flag.clear()
     qs = server + "/matches"
+
     data_matches = requests.get(qs, headers={'Authorization': auth_str})
-    global mm
-    mm = json.loads(data_matches.text)
+    if data_matches.status_code == 429:
+        time.sleep(1)
+        data_matches = requests.get(qs, headers={'Authorization': auth_str})
+    
+    if data_matches.status_code == 200:
+        global mm
+        mm = json.loads(data_matches.text)
 
     #print("done")
     timer = threading.Timer(600, kash)
@@ -102,7 +120,6 @@ def ply(id1, id2):
     
     mt = 0
     for i in mm:
-        print(i['id'])
         if i['team1'] in pl_tm[id1] and i['team2'] in pl_tm[id2]:
             mt += 1
         if i['team2'] in pl_tm[id1] and i['team1'] in pl_tm[id2]:
@@ -134,4 +151,3 @@ while(1):
         id2 = int(id2)
         print(ply(id1, id2))
     flag.set()
-
